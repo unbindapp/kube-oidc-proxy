@@ -28,6 +28,12 @@ tls:
   # `secretName` must be a name of Secret of TLS type. If not provided a
   # self-signed certificate will get generated.
   secretName:
+  # `certManager` if you have cert-manager in your cluster and dont want to manage manually
+  certManager: false
+  # `selfSigned` if you have cert-manager and perfer or not to use use default issuer or generate by using other issuer
+  selfSigned: true
+  # `issuerName` if `selfSigned` is false, you should add your own Issuer
+  issuerName:
 
 # These values needs to be set in overrides in order to get kube-oidc-proxy
 # working.
