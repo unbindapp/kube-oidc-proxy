@@ -67,7 +67,7 @@ jobs:
 
       - name: generate tag
         run: |-
-            export PROJ_VERSION="1.0.6"
+            export PROJ_VERSION="1.0.7"
             echo "Project Version: $PROJ_VERSION"
             echo "TAG=$PROJ_VERSION-$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
             echo "SHORT_TAG=$PROJ_VERSION" >> $GITHUB_ENV
@@ -90,7 +90,6 @@ jobs:
 
       - name: sign images
         run: |-
-                  cosign sign -y ${{ secrets.OU_CONTAINER_DEST }}:${{ env.TAG }}
                   cosign sign -y ghcr.io/${{ env.REPO }}:${{ env.TAG }}
           
       - uses: anchore/sbom-action@v0
@@ -107,15 +106,14 @@ jobs:
     
       - name: attach sbom to images
         run: |-
-              cosign attach sbom --sbom /tmp/spdxd ${{ secrets.OU_CONTAINER_DEST }}:${{ env.TAG }}
               cosign attach sbom --sbom /tmp/spdxg ghcr.io/${{ env.REPO }}:${{ env.TAG }}
     
-              DH_SBOM_SHA=$(cosign verify --certificate-oidc-issuer-regexp='.*' --certificate-identity-regexp='.*' ${{ secrets.OU_CONTAINER_DEST }}:${{ env.TAG }} 2>/dev/null | jq -r '.[0].critical.image["docker-manifest-digest"]' | cut -c 8-)
+              
               GH_SBOM_SHA=$(cosign verify --certificate-oidc-issuer-regexp='.*' --certificate-identity-regexp='.*' ghcr.io/${{ env.REPO }}:${{ env.TAG }} 2>/dev/null | jq -r '.[0].critical.image["docker-manifest-digest"]' | cut -c 8-)
     
-              echo "DH_SBOM_SHA: $DH_SBOM_SHA"
+              
               echo "GH_SBOM_SHA: $GH_SBOM_SHA"
 
-              cosign sign -y ${{ secrets.OU_CONTAINER_DEST }}:sha256-$DH_SBOM_SHA.sbom
+              
               cosign sign -y ghcr.io/${{ env.REPO }}:sha256-$GH_SBOM_SHA.sbom
           

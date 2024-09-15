@@ -9,6 +9,7 @@ import (
 	genericapifilters "k8s.io/apiserver/pkg/endpoints/filters"
 	"k8s.io/apiserver/pkg/server"
 	genericfilters "k8s.io/apiserver/pkg/server/filters"
+	"k8s.io/apiserver/pkg/util/version"
 
 	"github.com/jetstack/kube-oidc-proxy/cmd/app/options"
 )
@@ -38,6 +39,7 @@ func New(opts *options.AuditOptions, externalAddress string, secureServingInfo *
 		return nil, err
 	}
 
+	serverConfig.EffectiveVersion = version.NewEffectiveVersion("1.0.31")
 	completed := serverConfig.Complete(nil)
 
 	return &Audit{
