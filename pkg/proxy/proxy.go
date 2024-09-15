@@ -2,6 +2,7 @@
 package proxy
 
 import (
+	ctx "context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -10,6 +11,7 @@ import (
 	"net/url"
 	"time"
 
+	"k8s.io/apiserver/pkg/apis/apiserver"
 	"k8s.io/apiserver/pkg/authentication/authenticator"
 	"k8s.io/apiserver/pkg/authentication/request/bearertoken"
 	"k8s.io/apiserver/pkg/server"
@@ -93,17 +95,31 @@ func New(restConfig *rest.Config,
 		CAFile: oidcOptions.CAFile,
 	}
 
+	// setup static JWT Auhenticator
+	jwtConfig := apiserver.JWTAuthenticator{
+		Issuer: apiserver.Issuer{
+			URL:                  oidcOptions.IssuerURL,
+			CertificateAuthority: oidcOptions.CAFile,
+		},
+
+		ClaimMappings: apiserver.ClaimMappings{
+			Username: apiserver.PrefixedClaimOrExpression{
+				Claim:  oidcOptions.UsernameClaim,
+				Prefix: &oidcOptions.UsernamePrefix,
+			},
+			Groups: apiserver.PrefixedClaimOrExpression{
+				Claim:  oidcOptions.GroupsClaim,
+				Prefix: &oidcOptions.GroupsPrefix,
+			},
+		},
+	}
+
 	// generate tokenAuther from oidc config
-	tokenAuther, err := oidc.New(oidc.Options{
-		CAContentProvider:    caFromFile,
-		ClientID:             oidcOptions.ClientID,
-		GroupsClaim:          oidcOptions.GroupsClaim,
-		GroupsPrefix:         oidcOptions.GroupsPrefix,
-		IssuerURL:            oidcOptions.IssuerURL,
-		RequiredClaims:       oidcOptions.RequiredClaims,
+	tokenAuther, err := oidc.New(ctx.TODO(), oidc.Options{
+		CAContentProvider: caFromFile,
+		//RequiredClaims:       oidcOptions.RequiredClaims,
 		SupportedSigningAlgs: oidcOptions.SigningAlgs,
-		UsernameClaim:        oidcOptions.UsernameClaim,
-		UsernamePrefix:       oidcOptions.UsernamePrefix,
+		JWTAuthenticator:     jwtConfig,
 	})
 	if err != nil {
 		return nil, err
