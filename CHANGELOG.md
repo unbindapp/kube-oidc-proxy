@@ -1,3 +1,11 @@
+# 1.0.7
+
+**enhancements:**
+ - change oidc config to line up with new kube authenticator [\#55](https://github.com/TremoloSecurity/kube-oidc-proxy/issues/55)
+
+**tasks:**
+ - 1.0.7 Release [\#54](https://github.com/TremoloSecurity/kube-oidc-proxy/issues/54)
+
 # 1.0.6
 
 **bugs:**
