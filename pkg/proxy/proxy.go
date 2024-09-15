@@ -99,7 +99,8 @@ func New(restConfig *rest.Config,
 	jwtConfig := apiserver.JWTAuthenticator{
 		Issuer: apiserver.Issuer{
 			URL:                  oidcOptions.IssuerURL,
-			CertificateAuthority: oidcOptions.CAFile,
+			Audiences:            []string{oidcOptions.ClientID},
+			CertificateAuthority: string(caFromFile.CurrentCABundleContent()),
 		},
 
 		ClaimMappings: apiserver.ClaimMappings{
