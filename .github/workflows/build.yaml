@@ -92,12 +92,6 @@ jobs:
       - name: sign images
         run: |-
                   cosign sign -y ghcr.io/${{ env.REPO }}:${{ env.TAG }}
-          
-      - uses: anchore/sbom-action@v0
-        with:
-          image: ${{ secrets.OU_CONTAINER_DEST }}:${{ env.TAG }}
-          format: spdx
-          output-file: /tmp/spdxd
 
       - uses: anchore/sbom-action@v0
         with:
