@@ -97,11 +97,12 @@ e2e: depend ## run end to end tests
 	KUBE_OIDC_PROXY_ROOT_PATH="$$(pwd)" go test -timeout 30m -v --count=1 ./test/e2e/suite/.
 
 build: generate ## build kube-oidc-proxy
-	CGO_ENABLED=0 go build -ldflags '-w $(shell hack/version-ldflags.sh)' -o ./bin/kube-oidc-proxy ./cmd/.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags '-w $(shell hack/version-ldflags.sh)' -o ./bin/kube-oidc-proxy-amd64 ./cmd/.
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags '-w $(shell hack/version-ldflags.sh)' -o ./bin/kube-oidc-proxy-arm64 ./cmd/.
 
 docker_build: generate test build ## build docker image
 	GOARCH=$(ARCH) GOOS=linux CGO_ENABLED=0 go build -ldflags '-w $(shell hack/version-ldflags.sh)' -o ./bin/kube-oidc-proxy  ./cmd/.
-	docker build -t kube-oidc-proxy .
+	docker buildx linux/$(ARCH) -t kube-oidc-proxy .
 
 all: test build ## runs tests, build
 
