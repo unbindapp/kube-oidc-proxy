@@ -9,7 +9,7 @@ import (
 	genericapifilters "k8s.io/apiserver/pkg/endpoints/filters"
 	"k8s.io/apiserver/pkg/server"
 	genericfilters "k8s.io/apiserver/pkg/server/filters"
-	"k8s.io/apiserver/pkg/util/version"
+	"k8s.io/component-base/version"
 
 	"github.com/jetstack/kube-oidc-proxy/cmd/app/options"
 )
