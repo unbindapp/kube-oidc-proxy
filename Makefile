@@ -97,8 +97,8 @@ e2e: depend ## run end to end tests
 	KUBE_OIDC_PROXY_ROOT_PATH="$$(pwd)" go test -timeout 30m -v --count=1 ./test/e2e/suite/.
 
 build: generate ## build kube-oidc-proxy
-	mkdir ./bin/amd64
-	mkdir ./bin/arm64
+	mkdir -p ./bin/amd64
+	mkdir -p ./bin/arm64
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags '-w $(shell hack/version-ldflags.sh)' -o ./bin/amd64/kube-oidc-proxy ./cmd/.
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags '-w $(shell hack/version-ldflags.sh)' -o ./bin/arm64/kube-oidc-proxy ./cmd/.
 
