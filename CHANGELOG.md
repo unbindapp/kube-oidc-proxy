@@ -1,3 +1,11 @@
+# 1.0.9
+
+**tasks:**
+ - 1.0.9 [\#64](https://github.com/TremoloSecurity/kube-oidc-proxy/issues/64)
+
+**enhancements:**
+ - Add flags to be able to configure kubernetes client throttling [\#65](https://github.com/TremoloSecurity/kube-oidc-proxy/issues/65)
+
 # 1.0.8
 
 **tasks:**
